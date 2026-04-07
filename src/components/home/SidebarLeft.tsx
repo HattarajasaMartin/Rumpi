@@ -1,0 +1,63 @@
+import { Home, Search, Heart, User, LogOut } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { logout } from "@/features/auth/authSlice";
+import { NavItem } from "./NavItems";
+
+export const SidebarLeft = () => {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const handleLogout = () => {
+    dispatch(logout());
+    navigate("/login");
+  };
+
+  return (
+    <aside className="w-[20%] sticky top-0 h-screen flex flex-col py-8 px-8 border-r border-zinc-900">
+      <h1
+        className="text-4xl font-bold text-blue-500 mb-10 tracking-tighter cursor-pointer"
+        onClick={() => navigate("/home")}
+      >
+        talka
+      </h1>
+      <nav className="space-y-6 flex-1">
+        <NavItem
+          icon={<Home size={28} />}
+          label="Home"
+          active
+          onClick={() => navigate("/home")}
+        />
+        <NavItem
+          icon={<Search size={28} />}
+          label="Search"
+          onClick={() => navigate("/search")}
+        />
+        <NavItem
+          icon={<Heart size={28} />}
+          label="Follows"
+          onClick={() => navigate("/follows")}
+        />
+        <NavItem
+          icon={<User size={28} />}
+          label="Profile"
+          onClick={() => navigate("/profile")}
+        />
+        <Button className="w-full bg-blue-500 hover:bg-blue-600 rounded-full h-12 font-bold text-lg mt-4 border-none transition-all active:scale-95">
+          Create Post
+        </Button>
+      </nav>
+      <button
+        onClick={handleLogout}
+        className="flex items-center gap-3 text-zinc-500 hover:text-red-500 transition-colors mt-auto pb-4 group"
+      >
+        <LogOut
+          size={24}
+          className="group-hover:-translate-x-1 transition-transform"
+        />
+        <span className="font-semibold text-lg">Logout</span>
+      </button>
+    </aside>
+  );
+};

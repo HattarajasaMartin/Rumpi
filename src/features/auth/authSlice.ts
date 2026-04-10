@@ -30,20 +30,20 @@ const authSlice = createSlice({
     initialState,
     reducers: {
         setAuth: (state, action: PayloadAction<{ user: User; token: string }>) => {
-            state.user = action.payload.user;
-            state.token = action.payload.token;
-            state.isAuthenticated = true;
+            state.user = action.payload.user; // Simpan nama/foto ke Redux
+            state.token = action.payload.token; // Simpan token ke Redux
+            state.isAuthenticated = true; // Kasih tau kalau "Sudah Login"
 
             // Simpan ke storage agar awet
             localStorage.setItem('token', action.payload.token);
             localStorage.setItem('user', JSON.stringify(action.payload.user));
         },
-        logout: (state) => {
+        logout: (state) => { // Untuk hapus hak akses 
             state.user = null;
             state.token = null;
             state.isAuthenticated = false;
-            localStorage.removeItem('token');
-            localStorage.removeItem('user');
+            localStorage.removeItem('token'); // Hapus tokennya localStorage
+            localStorage.removeItem('user'); // Hapus data user dari localStorage
         },
         updateUser: (state, action: PayloadAction<Partial<User>>) => {
             if (state.user) {

@@ -20,7 +20,7 @@ export const SidebarLeft = () => {
         className="text-4xl font-bold text-blue-500 mb-10 tracking-tighter cursor-pointer"
         onClick={() => navigate("/home")}
       >
-        talka
+        Talka
       </h1>
       <nav className="space-y-6 flex-1">
         <NavItem

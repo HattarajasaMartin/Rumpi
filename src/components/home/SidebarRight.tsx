@@ -29,10 +29,10 @@ export const SidebarRight = () => {
             </p>
             <div className="flex gap-6 mt-4 text-sm font-semibold">
               <span>
-                <b className="text-white">291</b> Following
+                <b className="text-white">{ user?.following }</b> Following
               </span>
               <span>
-                <b className="text-white">23</b> Followers
+                <b className="text-white">{ user?.followers }</b> Followers
               </span>
             </div>
           </div>

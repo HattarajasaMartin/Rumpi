@@ -11,6 +11,7 @@ import type { RootState } from "./store";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import HomePage from "./pages/HomePage"; 
+import ThreadDetailPage from "./pages/ThreadDetail"; // 1. IMPORT PAGE BARU
 
 function App() {
   // Ambil status login dari Redux global state
@@ -37,11 +38,19 @@ function App() {
           }
         />
 
-        {/* Protected Route: Hanya bisa diakses jika sudah login */}
+        {/* Protected Routes: Hanya bisa diakses jika sudah login */}
         <Route
           path="/home"
           element={
             isAuthenticated ? <HomePage /> : <Navigate to="/login" replace />
+          }
+        />
+
+        {/* 2. TAMBAHKAN ROUTE DETAIL DISINI */}
+        <Route
+          path="/thread/:id"
+          element={
+            isAuthenticated ? <ThreadDetailPage /> : <Navigate to="/login" replace />
           }
         />
 

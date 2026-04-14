@@ -2,32 +2,50 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { io } from "socket.io-client";
+import { useAppDispatch, useAppSelector } from "../store/hooks";
+import { initializeLikes, toggleLike, revertLike } from "../features/likes/likeSlice";
 
-const socket = io("http://localhost:5000"); // membuat koneksi realtime ke backend
+// Membuat koneksi realtime ke backend via WebSocket
+const socket = io("http://localhost:5000");
 
 export function useThreads() {
     const navigate = useNavigate();
+    const dispatch = useAppDispatch(); // untuk mengirim action ke Redux
+
     const [threads, setThreads] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const [content, setContent] = useState("");
-    const [image, setImage] = useState<File | null>(null); // State untuk file gambar
+    const [image, setImage] = useState<File | null>(null);
     const [isPosting, setIsPosting] = useState(false);
 
-    const token = localStorage.getItem("token"); // ambil token dari local storage
+    const token = localStorage.getItem("token");
+
+    // Checkpoint 2: Ambil data likes dari Redux store
+    // likedThreads → { threadId: isLiked }, likeCounts → { threadId: count }
+    const likedThreads = useAppSelector((state) => state.likes.likedThreads);
+    const likeCounts = useAppSelector((state) => state.likes.likeCounts);
 
     useEffect(() => {
-        socket.on("newThread", (newThreadFromSocket) => { // mendengarkan event dari server (kalau ada data baru langsung tahu)
-            setThreads((prevThreads) => { // funct masukkan post terbaru ke paling atas (state berubah)
-                const exists = prevThreads.find(t => t.id === newThreadFromSocket.id); // cek dulu supaya tidak duplikat
+        // Mendengarkan event "newThread" dari server (realtime via socket)
+        socket.on("newThread", (newThreadFromSocket) => {
+            setThreads((prevThreads) => {
+                // Cek duplikat sebelum menambahkan thread baru
+                const exists = prevThreads.find(t => t.id === newThreadFromSocket.id);
                 if (exists) return prevThreads;
-                return [newThreadFromSocket, ...prevThreads]; // post baru berada di paling atas
+                return [newThreadFromSocket, ...prevThreads]; // thread baru di paling atas
             });
+
+            // Checkpoint 1: Simpan data like thread baru ke Redux
+            dispatch(initializeLikes([{
+                threadId: newThreadFromSocket.id,
+                isLiked: newThreadFromSocket.isLiked ?? false,
+                likeCount: newThreadFromSocket.likes ?? 0,
+            }]));
         });
 
-        return () => {
-            socket.off("newThread");
-        };
-    }, []);
+        // Cleanup: hentikan listener saat komponen unmount
+        return () => { socket.off("newThread"); };
+    }, [dispatch]);
 
     const fetchThreads = async () => {
         try {
@@ -35,39 +53,45 @@ export function useThreads() {
             const response = await axios.get("http://localhost:5000/api/v1/thread?limit=25", {
                 headers: { Authorization: `Bearer ${token}` },
             });
-            setThreads(response.data);
+
+            const fetchedThreads = response.data;
+            setThreads(fetchedThreads); // simpan threads ke local state
+
+            // Checkpoint 1: Store semua data like dari hasil fetch ke Redux
+            // agar UI bisa membaca status like dari satu sumber (Redux)
+            dispatch(initializeLikes(
+                fetchedThreads.map((t: any) => ({
+                    threadId: t.id,
+                    isLiked: t.isLiked ?? false,
+                    likeCount: t.likes ?? 0,
+                }))
+            ));
         } catch (err: any) {
-            if (err.response?.status === 401) navigate("/login");
+            if (err.response?.status === 401) navigate("/login"); // token expired → redirect login
         } finally {
             setLoading(false);
         }
     };
 
-    const handlePost = async () => { // saat button post ditekan, fungsi jalan
-        if (!content.trim() && !image) return; 
+    const handlePost = async () => {
+        if (!content.trim() && !image) return; // jangan kirim jika kosong
 
         try {
             setIsPosting(true);
 
-            // WAJIB pakai FormData untuk kirim File
-            const formData = new FormData(); // pakai form data (json biasa tidak bisa kirim file)
+            // Pakai FormData karena perlu mengirim file gambar (JSON tidak bisa)
+            const formData = new FormData();
             formData.append("content", content);
-            if (image) {
-                formData.append("image", image);
-            }
+            if (image) formData.append("image", image);
 
-            // KIRIM DATA FORM KE BACKEND
-            await axios.post(
-                "http://localhost:5000/api/v1/thread", // endpoint CREATE post di backend
-                formData,
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`, // harus ada token dulu
-                        "Content-Type": "multipart/form-data"
-                    }
-                }
-            );
+            await axios.post("http://localhost:5000/api/v1/thread", formData, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    "Content-Type": "multipart/form-data",
+                },
+            });
 
+            // Reset form setelah berhasil post
             setContent("");
             setImage(null);
         } catch (err) {
@@ -78,36 +102,47 @@ export function useThreads() {
     };
 
     const handleLike = async (threadId: number) => {
+        // Simpan state like saat ini sebelum diubah, untuk keperluan revert jika API gagal
+        const previousIsLiked = likedThreads[threadId] ?? false;
+        const previousCount = likeCounts[threadId] ?? 0;
+
+        // Checkpoint 3: Optimistic update — update Redux lebih dulu agar UI instan
+        // User langsung melihat perubahan tanpa menunggu respons server
+        dispatch(toggleLike(threadId)); // kalau user like/unlike update dulu di redux biar ui-nya langsung berubah lalu kirim ke backend
+
         try {
-            const response = await axios.post(
+            // Checkpoint 4 (like) & Checkpoint 5 (unlike):
+            // Hit API ke database — backend menentukan apakah ini create atau delete like
+            // berdasarkan status like user saat ini di database
+            await axios.post(
                 "http://localhost:5000/api/v1/thread/like",
                 { threadId },
                 { headers: { Authorization: `Bearer ${token}` } }
             );
-            const { isLiked } = response.data;
-            setThreads((prevThreads) =>
-                prevThreads.map((t) => {
-                    if (t.id === threadId) {
-                        return {
-                            ...t,
-                            isLiked: isLiked,
-                            likes: isLiked ? t.likes + 1 : t.likes - 1,
-                        };
-                    }
-                    return t;
-                })
-            );
         } catch (err) {
             console.error("Gagal memproses like:", err);
+
+            // Jika API gagal, kembalikan Redux ke state sebelumnya (rollback)
+            // agar UI tidak menampilkan data yang salah
+            dispatch(revertLike({ threadId, previousIsLiked, previousCount }));
         }
     };
 
+    // Jalankan fetchThreads sekali saat komponen pertama kali mount
     useEffect(() => {
         fetchThreads();
     }, []);
 
+    // Checkpoint 2: Gabungkan data thread dengan data likes dari Redux
+    // Redux adalah sumber yang benar untuk status like & jumlah like
+    const threadsWithLikes = threads.map((t) => ({
+        ...t,
+        isLiked: likedThreads[t.id] ?? t.isLiked ?? false, // prioritaskan data dari Redux
+        likes: likeCounts[t.id] ?? t.likes ?? 0,           // prioritaskan data dari Redux
+    }));
+
     return {
-        threads,
+        threads: threadsWithLikes, // UI selalu membaca dari data yang sudah di-merge dengan Redux
         loading,
         content,
         setContent,
@@ -115,6 +150,6 @@ export function useThreads() {
         setImage,
         isPosting,
         handlePost,
-        handleLike
+        handleLike,
     };
 }

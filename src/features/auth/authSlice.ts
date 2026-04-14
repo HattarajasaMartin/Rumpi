@@ -6,7 +6,9 @@ export interface User {
     full_name: string;
     email: string;
     bio?: string;
-    profile_picture?: string;
+    followers: number;
+    following: number;
+    photo_profile?: string;
 }
 
 interface AuthState {

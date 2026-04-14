@@ -26,11 +26,13 @@ export default function HomePage() {
   return (
     <div className="min-h-screen bg-black text-white flex">
       <div className="w-full flex">
+        {/* Sidebar Kiri */}
         <SidebarLeft />
 
         <main className="flex-1 py-8 border-r border-zinc-900 min-w-0">
           <h2 className="text-2xl font-bold mb-8 px-8 text-white">Home</h2>
 
+          {/* Input Postingan Baru */}
           <div className="flex gap-4 px-8 mb-10">
             <div className="w-12 h-12 rounded-full bg-zinc-800 overflow-hidden shrink-0">
               <img
@@ -89,6 +91,7 @@ export default function HomePage() {
             </div>
           </div>
 
+          {/* Feed Thread */}
           <div className="space-y-0">
             {loading ? (
               <div className="px-8 text-zinc-500 italic">
@@ -98,6 +101,7 @@ export default function HomePage() {
               threads.map((thread) => (
                 <Threadcard
                   key={thread.id}
+                  id={thread.id} // Perbaikan: Menambahkan ID untuk navigasi & TS requirement
                   avatar={thread.avatar}
                   username={thread.username}
                   name={thread.name}
@@ -106,13 +110,17 @@ export default function HomePage() {
                   likes={thread.likes}
                   replies={thread.replies}
                   isLiked={thread.isLiked}
-                  onLike={() => handleLike(thread.id)}
+                  onLike={(e) => {
+                    e.stopPropagation(); // Mencegah klik like memicu navigasi ke detail
+                    handleLike(thread.id);
+                  }}
                 />
               ))
             )}
           </div>
         </main>
 
+        {/* Sidebar Kanan */}
         <SidebarRight />
       </div>
     </div>

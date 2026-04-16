@@ -16,8 +16,20 @@ export const registerAPI = async (userData: any) => {
 
 // 3. GOOGLE LOGIN (MENUKAR TOKEN GOOGLE DENGAN JWT TALKA)
 export const googleLoginAPI = async (googleToken: string) => {
-    const response = await axios.post(`${API_URL}/google-login`, {  // pergi ke endpoint/alamaat Google
-        token: googleToken // Properti 'token' ini harus sama dengan yang diminta di Backend controller
+    const response = await axios.post(`${API_URL}/google-login`, {
+        token: googleToken
+    });
+    return response.data;
+};
+
+// 4. EDIT PROFILE (UPDATE DATA USER — PAKAI FORMDATA KARENA ADA FOTO)
+export const editProfileAPI = async (formData: FormData) => {
+    const token = localStorage.getItem('token');
+    const response = await axios.put(`${API_URL}/edit-profile`, formData, {
+        headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'multipart/form-data', // wajib karena ada file foto
+        }
     });
     return response.data;
 };

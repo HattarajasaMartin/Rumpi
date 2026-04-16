@@ -1,9 +1,11 @@
 import { Button } from "@/components/ui/button";
 import { SuggestItem } from "./SuggestItem";
 import { useAuth } from "@/hooks/useAuth";
+import { useNavigate } from "react-router-dom";
 
 export const SidebarRight = () => {
   const { user } = useAuth();
+  const navigate = useNavigate();
 
   return (
     <aside className="w-[25%] sticky top-0 h-screen py-8 px-8 space-y-6 overflow-y-auto">
@@ -13,12 +15,19 @@ export const SidebarRight = () => {
         </h3>
         <div className="h-24 bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl mb-[-48px]"></div>
         <div className="px-2 pb-2">
+          {/* Avatar — pakai foto profil dari Redux, fallback ke dicebear */}
           <div className="w-20 h-20 rounded-full border-4 border-zinc-900 bg-zinc-800 overflow-hidden relative z-10">
             <img
-              src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${user?.username || "default"}`}
+              src={
+                user?.photo_profile
+                  ? `http://localhost:5000/uploads/${user.photo_profile}`
+                  : `https://api.dicebear.com/7.x/avataaars/svg?seed=${user?.username || "default"}`
+              }
               alt="me"
+              className="w-full h-full object-cover"
             />
           </div>
+
           <div className="mt-3">
             <h4 className="font-bold text-xl leading-tight text-white italic">
               ✨ {user?.full_name || "Guest User"} ✨
@@ -29,14 +38,17 @@ export const SidebarRight = () => {
             </p>
             <div className="flex gap-6 mt-4 text-sm font-semibold">
               <span>
-                <b className="text-white">{ user?.following }</b> Following
+                <b className="text-white">{user?.following}</b> Following
               </span>
               <span>
-                <b className="text-white">{ user?.followers }</b> Followers
+                <b className="text-white">{user?.followers}</b> Followers
               </span>
             </div>
           </div>
+
+          {/* Tombol Edit Profile — navigate ke halaman profile */}
           <Button
+            onClick={() => navigate("/profile")}
             variant="outline"
             className="w-full mt-5 border-zinc-700 rounded-full h-10 font-bold text-white hover:bg-zinc-800 transition-all"
           >
@@ -44,6 +56,7 @@ export const SidebarRight = () => {
           </Button>
         </div>
       </div>
+
       <div className="bg-zinc-900 rounded-2xl p-5 border border-zinc-800">
         <h3 className="font-bold mb-5 text-zinc-100 text-sm uppercase">
           Suggested for you

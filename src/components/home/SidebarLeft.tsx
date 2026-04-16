@@ -1,6 +1,6 @@
 import { Home, Search, Heart, User, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom"; // ← tambah useLocation
 import { useDispatch } from "react-redux";
 import { logout } from "@/features/auth/authSlice";
 import { NavItem } from "./NavItems";
@@ -8,6 +8,7 @@ import { NavItem } from "./NavItems";
 export const SidebarLeft = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const location = useLocation(); // ← tambah ini
 
   const handleLogout = () => {
     dispatch(logout());
@@ -26,22 +27,25 @@ export const SidebarLeft = () => {
         <NavItem
           icon={<Home size={28} />}
           label="Home"
-          active
+          active={location.pathname === "/home"} // ← dynamic
           onClick={() => navigate("/home")}
         />
         <NavItem
           icon={<Search size={28} />}
           label="Search"
+          active={location.pathname === "/search"} // ← dynamic
           onClick={() => navigate("/search")}
         />
         <NavItem
           icon={<Heart size={28} />}
           label="Follows"
+          active={location.pathname === "/follows"} // ← dynamic
           onClick={() => navigate("/follows")}
         />
         <NavItem
           icon={<User size={28} />}
           label="Profile"
+          active={location.pathname.startsWith("/profile")} // ← startsWith karena ada /profile/:username
           onClick={() => navigate("/profile")}
         />
         <Button className="w-full bg-blue-500 hover:bg-blue-600 rounded-full h-12 font-bold text-lg mt-4 border-none transition-all active:scale-95">

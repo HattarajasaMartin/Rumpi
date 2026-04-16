@@ -6,21 +6,18 @@ import {
 } from "react-router-dom";
 import { useSelector } from "react-redux";
 import type { RootState } from "./store";
-
-// Import Pages
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
-import HomePage from "./pages/HomePage"; 
-import ThreadDetailPage from "./pages/ThreadDetail"; // 1. IMPORT PAGE BARU
+import HomePage from "./pages/HomePage";
+import ThreadDetailPage from "./pages/ThreadDetail";
+import ProfilePage from "./pages/ProfilePages";
 
 function App() {
-  // Ambil status login dari Redux global state
   const { isAuthenticated } = useSelector((state: RootState) => state.auth);
 
   return (
     <Router>
       <Routes>
-        {/* Public Routes: Jika sudah login, redirect ke /home */}
         <Route
           path="/login"
           element={
@@ -37,32 +34,41 @@ function App() {
             )
           }
         />
-
-        {/* Protected Routes: Hanya bisa diakses jika sudah login */}
         <Route
           path="/home"
           element={
             isAuthenticated ? <HomePage /> : <Navigate to="/login" replace />
           }
         />
-
-        {/* 2. TAMBAHKAN ROUTE DETAIL DISINI */}
         <Route
           path="/thread/:id"
           element={
-            isAuthenticated ? <ThreadDetailPage /> : <Navigate to="/login" replace />
+            isAuthenticated ? (
+              <ThreadDetailPage />
+            ) : (
+              <Navigate to="/login" replace />
+            )
           }
         />
-
-        {/* Root Redirect */}
+        <Route
+          path="/profile"
+          element={
+            isAuthenticated ? <ProfilePage /> : <Navigate to="/login" replace />
+          }
+        />
+        {/* ← Route baru untuk profile orang lain */}
+        <Route
+          path="/profile/:username"
+          element={
+            isAuthenticated ? <ProfilePage /> : <Navigate to="/login" replace />
+          }
+        />
         <Route
           path="/"
           element={
             <Navigate to={isAuthenticated ? "/home" : "/login"} replace />
           }
         />
-
-        {/* Fallback 404: Jika route tidak ditemukan */}
         <Route
           path="*"
           element={

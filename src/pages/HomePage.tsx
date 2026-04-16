@@ -34,12 +34,19 @@ export default function HomePage() {
 
           {/* Input Postingan Baru */}
           <div className="flex gap-4 px-8 mb-10">
+            {/* Avatar diambil dari Redux — kalau ada foto profil pakai itu, kalau tidak pakai dicebear */}
             <div className="w-12 h-12 rounded-full bg-zinc-800 overflow-hidden shrink-0">
               <img
-                src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${user?.username || "user"}`}
+                src={
+                  user?.photo_profile
+                    ? `http://localhost:5000/uploads/${user.photo_profile}`
+                    : `https://api.dicebear.com/7.x/avataaars/svg?seed=${user?.username || "user"}`
+                }
                 alt="avatar"
+                className="w-full h-full object-cover"
               />
             </div>
+
             <div className="flex-1 space-y-4">
               <textarea
                 value={content}
@@ -101,7 +108,7 @@ export default function HomePage() {
               threads.map((thread) => (
                 <Threadcard
                   key={thread.id}
-                  id={thread.id} // Perbaikan: Menambahkan ID untuk navigasi & TS requirement
+                  id={thread.id}
                   avatar={thread.avatar}
                   username={thread.username}
                   name={thread.name}
@@ -111,7 +118,7 @@ export default function HomePage() {
                   replies={thread.replies}
                   isLiked={thread.isLiked}
                   onLike={(e) => {
-                    e.stopPropagation(); // Mencegah klik like memicu navigasi ke detail
+                    e.stopPropagation();
                     handleLike(thread.id);
                   }}
                 />

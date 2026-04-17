@@ -11,6 +11,8 @@ import RegisterPage from "./pages/RegisterPage";
 import HomePage from "./pages/HomePage";
 import ThreadDetailPage from "./pages/ThreadDetail";
 import ProfilePage from "./pages/ProfilePages";
+import SearchPage from "./pages/SearchPage";
+import FollowsPage from "./pages/FollowsPage"; // ← tambah
 
 function App() {
   const { isAuthenticated } = useSelector((state: RootState) => state.auth);
@@ -56,11 +58,22 @@ function App() {
             isAuthenticated ? <ProfilePage /> : <Navigate to="/login" replace />
           }
         />
-        {/* ← Route baru untuk profile orang lain */}
         <Route
           path="/profile/:username"
           element={
             isAuthenticated ? <ProfilePage /> : <Navigate to="/login" replace />
+          }
+        />
+        <Route
+          path="/search"
+          element={
+            isAuthenticated ? <SearchPage /> : <Navigate to="/login" replace />
+          }
+        />
+        <Route
+          path="/follows"
+          element={
+            isAuthenticated ? <FollowsPage /> : <Navigate to="/login" replace />
           }
         />
         <Route

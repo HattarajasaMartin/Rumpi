@@ -3,6 +3,7 @@ import axios from "axios";
 import { io } from "socket.io-client";
 import { useSelector } from "react-redux";
 import type { RootState } from "../store";
+import toast from "react-hot-toast";
 
 // 🔌 1. Bikin koneksi socket ke backend (sekali saja, di luar hook)
 // Kenapa di luar? → supaya tidak bikin koneksi baru tiap render
@@ -136,6 +137,8 @@ export function useThreadDetail(id?: string) {
         { content: text, thread_id: Number(id) },
         { headers },
       );
+
+      toast.success("Berhasil berkomentar")
 
       // ❗ TIDAK perlu setReplies lagi di sini
       // karena socket akan kirim data asli nanti

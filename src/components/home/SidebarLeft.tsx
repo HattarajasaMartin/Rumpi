@@ -48,9 +48,6 @@ export const SidebarLeft = () => {
           active={location.pathname.startsWith("/profile")} // ← startsWith karena ada /profile/:username
           onClick={() => navigate("/profile")}
         />
-        <Button className="w-full bg-blue-500 hover:bg-blue-600 rounded-full h-12 font-bold text-lg mt-4 border-none transition-all active:scale-95">
-          Create Post
-        </Button>
       </nav>
       <button
         onClick={handleLogout}

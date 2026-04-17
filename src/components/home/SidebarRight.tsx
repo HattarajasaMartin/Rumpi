@@ -1,21 +1,29 @@
 import { Button } from "@/components/ui/button";
-import { SuggestItem } from "./SuggestItem";
 import { useAuth } from "@/hooks/useAuth";
 import { useNavigate } from "react-router-dom";
+import { useSuggested } from "@/hooks/useSuggested";
+import { useFollow } from "@/hooks/useFollow";
 
 export const SidebarRight = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const { suggested, loading, removeFromSuggested } = useSuggested();
+  const { followUser } = useFollow();
+
+  const handleFollow = async (userId: number) => {
+    await followUser(userId);
+    removeFromSuggested(userId); // ← hilangkan dari list setelah follow
+  };
 
   return (
     <aside className="w-[25%] sticky top-0 h-screen py-8 px-8 space-y-6 overflow-y-auto">
+      {/* MY PROFILE CARD */}
       <div className="bg-zinc-900 rounded-2xl p-5 border border-zinc-800 shadow-2xl">
         <h3 className="font-bold mb-4 text-sm text-blue-500 uppercase tracking-widest">
           My Profile
         </h3>
         <div className="h-24 bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl mb-[-48px]"></div>
         <div className="px-2 pb-2">
-          {/* Avatar — pakai foto profil dari Redux, fallback ke dicebear */}
           <div className="w-20 h-20 rounded-full border-4 border-zinc-900 bg-zinc-800 overflow-hidden relative z-10">
             <img
               src={
@@ -46,7 +54,6 @@ export const SidebarRight = () => {
             </div>
           </div>
 
-          {/* Tombol Edit Profile — navigate ke halaman profile */}
           <Button
             onClick={() => navigate("/profile")}
             variant="outline"
@@ -57,14 +64,60 @@ export const SidebarRight = () => {
         </div>
       </div>
 
+      {/* SUGGESTED FOR YOU */}
       <div className="bg-zinc-900 rounded-2xl p-5 border border-zinc-800">
         <h3 className="font-bold mb-5 text-zinc-100 text-sm uppercase">
           Suggested for you
         </h3>
-        <div className="space-y-6">
-          <SuggestItem name="Mohammed Jawahir" username="em.jawahir" />
-          <SuggestItem name="Shakia Kimathi" username="shakiakim" />
-        </div>
+
+        {loading ? (
+          <p className="text-zinc-500 text-sm italic">Loading...</p>
+        ) : suggested.length === 0 ? (
+          <p className="text-zinc-500 text-sm">Tidak ada saran user.</p>
+        ) : (
+          <div className="space-y-4">
+            {suggested.map((u) => (
+              <div
+                key={u.id}
+                className="flex items-center justify-between gap-3"
+              >
+                {/* Avatar + Info — klik navigasi ke profile */}
+                <div
+                  className="flex items-center gap-3 cursor-pointer flex-1 min-w-0"
+                  onClick={() => navigate(`/profile/${u.username}`)}
+                >
+                  <div className="w-9 h-9 rounded-full bg-zinc-800 overflow-hidden shrink-0">
+                    <img
+                      src={
+                        u.avatar
+                          ? `http://localhost:5000/uploads/${u.avatar}`
+                          : `https://api.dicebear.com/7.x/avataaars/svg?seed=${u.username}`
+                      }
+                      alt={u.username}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <div className="min-w-0">
+                    <p className="font-semibold text-white text-sm truncate">
+                      {u.name || u.username}
+                    </p>
+                    <p className="text-zinc-500 text-xs truncate">
+                      @{u.username}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Tombol Follow */}
+                <Button
+                  onClick={() => handleFollow(u.id)}
+                  className="rounded-full bg-white text-black hover:bg-zinc-200 text-xs px-4 h-8 shrink-0"
+                >
+                  Follow
+                </Button>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </aside>
   );

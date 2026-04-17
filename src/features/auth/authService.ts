@@ -1,6 +1,7 @@
 import axios from 'axios';
+import toast from 'react-hot-toast';
 
-const API_URL = 'http://localhost:5000/api/v1/auth';
+const API_URL = `http://localhost:5000/api/v1/auth`;
 
 // 1. LOGIN MANUAL (EMAIL & PASSWORD)
 export const loginAPI = async (userData: any) => {
@@ -31,5 +32,6 @@ export const editProfileAPI = async (formData: FormData) => {
             'Content-Type': 'multipart/form-data', // wajib karena ada file foto
         }
     });
+    toast.success("Edit profile berhasil!")
     return response.data;
 };

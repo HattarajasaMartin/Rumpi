@@ -18,6 +18,10 @@
     @apply bg-background text-foreground antialiased;
     font-family: 'Inter', system-ui, sans-serif;
   }
+
+  button {
+    @apply cursor-pointer
+  }
 }
 
 /* Custom Utility untuk Glassmorphism atau Hover ala Threads */

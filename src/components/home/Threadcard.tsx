@@ -1,4 +1,4 @@
-import { Heart, MessageCircle, Share2, Repeat2 } from "lucide-react";
+import { Heart, MessageCircle } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 interface ThreadCardProps {
@@ -38,11 +38,11 @@ export const Threadcard = ({
       className="border-b border-zinc-900 p-8 hover:bg-zinc-950/50 transition-colors cursor-pointer"
     >
       <div className="flex gap-4">
-        {/* Avatar — klik navigasi ke profile pemilik thread */}
+        {/* Avatar */}
         <div
           className="w-12 h-12 rounded-full bg-zinc-800 overflow-hidden shrink-0 cursor-pointer"
           onClick={(e) => {
-            e.stopPropagation(); // ← cegah trigger handleCardClick
+            e.stopPropagation();
             navigate(`/profile/${username}`);
           }}
         >
@@ -63,6 +63,7 @@ export const Threadcard = ({
             </span>
             <span className="text-zinc-500 text-sm">@{username}</span>
           </div>
+
           <p className="text-zinc-200 leading-relaxed text-[15px] mb-3">
             {content}
           </p>
@@ -72,13 +73,14 @@ export const Threadcard = ({
               <img
                 src={`http://localhost:5000/uploads/${image}`}
                 alt="post content"
-                className="w-full max-h-[380px] rounded-2xl object-cover"
+                className="w-full rounded-2xl object-contain bg-zinc-950" // ← object-contain, hapus max-h, tambah bg
                 onError={(e) => (e.currentTarget.style.display = "none")}
               />
             </div>
           )}
 
-          <div className="flex items-center justify-between text-zinc-500 max-w-md pt-1">
+          {/* Buttons */}
+          <div className="flex items-center gap-6 text-zinc-500 pt-1">
             <button
               onClick={(e) => {
                 e.stopPropagation();
@@ -90,23 +92,12 @@ export const Threadcard = ({
               <span className="text-sm">{likes}</span>
             </button>
 
-            <button className="flex items-center gap-2.5 hover:text-blue-500">
+            <button
+              onClick={(e) => e.stopPropagation()}
+              className="flex items-center gap-2.5 hover:text-blue-500 transition-colors"
+            >
               <MessageCircle size={18} />
               <span className="text-sm">{replies}</span>
-            </button>
-
-            <button
-              onClick={(e) => e.stopPropagation()}
-              className="hover:text-green-500 p-1.5 rounded-full hover:bg-green-500/10 transition-colors"
-            >
-              <Repeat2 size={18} />
-            </button>
-
-            <button
-              onClick={(e) => e.stopPropagation()}
-              className="hover:text-blue-500 p-1.5 rounded-full hover:bg-blue-500/10 transition-colors"
-            >
-              <Share2 size={18} />
             </button>
           </div>
         </div>

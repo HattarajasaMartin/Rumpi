@@ -25,7 +25,7 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen bg-zinc-950 text-white flex overflow-x-hidden">
-      <div className="w-full flex">
+      <div className="w-full flex items-start">
         <SidebarLeft />
 
         <main className="flex-1 py-8 border-r border-zinc-900 min-w-0 pb-20 md:pb-8">

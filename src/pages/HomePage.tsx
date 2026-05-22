@@ -1,131 +1,122 @@
-import { Image as ImageIcon, X } from "lucide-react";
-import { useRef } from "react";
 import { Button } from "@/components/ui/button";
-import { useAuth } from "../hooks/useAuth";
-import { useThreads } from "../hooks/useThreads";
-import { Threadcard } from "@/components/home/Threadcard";
-import { SidebarLeft } from "@/components/home/SidebarLeft";
-import { SidebarRight } from "@/components/home/SidebarRight";
+import { useAuth } from "@/hooks/useAuth";
+import { useNavigate } from "react-router-dom";
+import { useSuggested } from "@/hooks/useSuggested";
+import { useFollow } from "@/hooks/useFollow";
 
-export default function HomePage() {
+export const SidebarRight = () => {
   const { user } = useAuth();
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const navigate = useNavigate();
+  const { suggested, loading, removeFromSuggested } = useSuggested();
+  const { followUser } = useFollow();
 
-  const {
-    threads,
-    loading,
-    content,
-    setContent,
-    image,
-    setImage,
-    isPosting,
-    handlePost,
-    handleLike,
-  } = useThreads();
+  const handleFollow = async (userId: number) => {
+    await followUser(userId);
+    removeFromSuggested(userId);
+  };
 
   return (
-    <div className="min-h-screen bg-zinc-950 text-white flex overflow-x-hidden">
-      <div className="w-full flex items-start">
-        <SidebarLeft />
+    <aside className="hidden lg:flex flex-col w-[25%] h-screen py-8 px-8 space-y-6 overflow-y-auto shrink-0">
+      {/* MY PROFILE CARD */}
+      <div className="bg-zinc-900 rounded-2xl p-5 border border-zinc-800 shadow-2xl">
+        <h3 className="font-bold mb-4 text-sm text-teal-400 uppercase tracking-widest">
+          My Profile
+        </h3>
+        <div className="h-24 bg-gradient-to-r from-teal-600 to-emerald-500 rounded-xl mb-[-48px]"></div>
+        <div className="px-2 pb-2">
+          <div className="w-20 h-20 rounded-full border-4 border-zinc-900 bg-zinc-800 overflow-hidden relative z-10">
+            <img
+              src={
+                user?.photo_profile
+                  ? `https://api-rumpi-production.up.railway.app/uploads/${user.photo_profile}`
+                  : `https://api.dicebear.com/7.x/avataaars/svg?seed=${user?.username || "default"}`
+              }
+              alt="me"
+              className="w-full h-full object-cover"
+            />
+          </div>
 
-        <main className="flex-1 py-8 border-r border-zinc-900 min-w-0 pb-20 md:pb-8">
-          <h2 className="text-2xl font-bold mb-8 px-4 md:px-8 text-white">Home</h2>
-
-          {/* Input Postingan Baru */}
-          <div className="flex gap-4 px-4 md:px-8 mb-10">
-            <div className="w-12 h-12 rounded-full bg-zinc-800 overflow-hidden shrink-0">
-              <img
-                src={
-                  user?.photo_profile
-                    ? `https://api-rumpi-production.up.railway.app/uploads/${user.photo_profile}`
-                    : `https://api.dicebear.com/7.x/avataaars/svg?seed=${user?.username || "user"}`
-                }
-                alt="avatar"
-                className="w-full h-full object-cover"
-              />
+          <div className="mt-3">
+            <h4 className="font-bold text-xl leading-tight text-white italic">
+              ✨ {user?.full_name || "Guest User"} ✨
+            </h4>
+            <p className="text-zinc-500">@{user?.username || "username"}</p>
+            <p className="text-sm mt-3 text-zinc-300">
+              {user?.bio || "No bio yet."}
+            </p>
+            <div className="flex gap-6 mt-4 text-sm font-semibold text-zinc-400">
+              <span>
+                <b className="text-white">{user?.following}</b> Following
+              </span>
+              <span>
+                <b className="text-white">{user?.followers}</b> Followers
+              </span>
             </div>
+          </div>
 
-            <div className="flex-1 space-y-4 min-w-0">
-              <textarea
-                value={content}
-                onChange={(e) => setContent(e.target.value)}
-                placeholder="What is happening?!"
-                className="w-full bg-transparent border-none text-xl outline-none placeholder:text-zinc-600 resize-none min-h-[60px] text-white"
-              />
+          <Button
+            onClick={() => navigate("/profile")}
+            variant="outline"
+            className="w-full mt-5 border-teal-700 rounded-full h-10 font-bold text-teal-400 hover:bg-teal-900/30 transition-all"
+          >
+            Edit Profile
+          </Button>
+        </div>
+      </div>
 
-              {image && (
-                <div className="relative w-fit">
-                  <img
-                    src={URL.createObjectURL(image)}
-                    alt="preview"
-                    className="max-h-60 rounded-xl border border-zinc-800"
-                  />
-                  <button
-                    onClick={() => setImage(null)}
-                    className="absolute top-2 right-2 bg-black/60 p-1 rounded-full hover:bg-black text-white"
-                  >
-                    <X size={16} />
-                  </button>
-                </div>
-              )}
+      {/* SUGGESTED FOR YOU */}
+      <div className="bg-zinc-900 rounded-2xl p-5 border border-zinc-800">
+        <h3 className="font-bold mb-5 text-teal-400 text-sm uppercase tracking-widest">
+          Suggested for you
+        </h3>
 
-              <div className="flex items-center justify-between border-t border-zinc-900 pt-4">
-                <div className="flex gap-6 text-teal-400">
-                  <input
-                    type="file"
-                    ref={fileInputRef}
-                    className="hidden"
-                    accept="image/*"
-                    onChange={(e) => setImage(e.target.files?.[0] || null)}
-                  />
-                  <ImageIcon
-                    size={22}
-                    className="cursor-pointer hover:text-teal-300"
-                    onClick={() => fileInputRef.current?.click()}
-                  />
-                </div>
-                <Button
-                  onClick={handlePost}
-                  disabled={isPosting || (!content.trim() && !image)}
-                  className="bg-teal-500 hover:bg-teal-400 px-8 rounded-full h-10 font-bold border-none text-white"
+        {loading ? (
+          <p className="text-zinc-500 text-sm italic">Loading...</p>
+        ) : suggested.length === 0 ? (
+          <p className="text-zinc-500 text-sm">Tidak ada saran user.</p>
+        ) : (
+          <div className="space-y-4">
+            {suggested.map((u) => (
+              <div
+                key={u.id}
+                className="flex items-center justify-between gap-3"
+              >
+                <div
+                  className="flex items-center gap-3 cursor-pointer flex-1 min-w-0"
+                  onClick={() => navigate(`/profile/${u.username}`)}
                 >
-                  {isPosting ? "Posting..." : "Post"}
+                  <div className="w-9 h-9 rounded-full bg-zinc-800 overflow-hidden shrink-0">
+                    <img
+                      src={
+                        u.avatar
+                          ? `https://api-rumpi-production.up.railway.app/uploads/${u.avatar}`
+                          : `https://api.dicebear.com/7.x/avataaars/svg?seed=${u.username}`
+                      }
+                      alt={u.username}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <div className="min-w-0">
+                    <p className="font-semibold text-white text-sm truncate">
+                      {u.name || u.username}
+                    </p>
+                    <p className="text-zinc-500 text-xs truncate">
+                      @{u.username}
+                    </p>
+                  </div>
+                </div>
+
+                <Button
+                  onClick={() => handleFollow(u.id)}
+                  className="rounded-full bg-teal-500 text-white hover:bg-teal-400 text-xs px-4 h-8 shrink-0 border-none"
+                >
+                  Follow
                 </Button>
               </div>
-            </div>
+            ))}
           </div>
-
-          {/* Feed Thread */}
-          <div className="space-y-0">
-            {loading ? (
-              <div className="px-4 md:px-8 text-zinc-500 italic">
-                Memuat postingan...
-              </div>
-            ) : (
-              threads.map((thread) => (
-                <Threadcard
-                  key={thread.id}
-                  id={thread.id}
-                  avatar={thread.avatar}
-                  username={thread.username}
-                  name={thread.name}
-                  content={thread.content}
-                  image={thread.image}
-                  likes={thread.likes}
-                  replies={thread.replies}
-                  isLiked={thread.isLiked}
-                  onLike={(e) => {
-                    e.stopPropagation();
-                    handleLike(thread.id);
-                  }}
-                />
-              ))
-            )}
-          </div>
-        </main>
-
-        <SidebarRight />
+        )}
       </div>
-    </div>
+    </aside>
   );
-}
+};

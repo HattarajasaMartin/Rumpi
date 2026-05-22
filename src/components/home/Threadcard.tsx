@@ -71,7 +71,7 @@ export const Threadcard = ({
           {image && (
             <div className="mb-4 mt-2 max-w-[480px]">
               <img
-                src={`http://localhost:5000/uploads/${image}`}
+                src={`https://api-rumpi-production.up.railway.app/uploads/${image}`}
                 alt="post content"
                 className="w-full rounded-2xl object-contain bg-zinc-950" // ← object-contain, hapus max-h, tambah bg
                 onError={(e) => (e.currentTarget.style.display = "none")}

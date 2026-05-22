@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:5000/api/v1/thread';
+const API_URL = 'https://api-rumpi-production.up.railway.app/api/v1/thread';
 
 export const getThreadsAPI = async (limit: number = 25) => {
     // Ambil token dari localStorage karena Backend kita pakai "Gembok" (Middleware)

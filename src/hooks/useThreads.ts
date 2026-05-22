@@ -7,7 +7,7 @@
     import toast from "react-hot-toast";
 
     // Membuat koneksi realtime ke backend via WebSocket
-    const socket = io("http://localhost:5000");
+    const socket = io("https://api-rumpi-production.up.railway.app");
 
     export function useThreads() {
         const navigate = useNavigate();
@@ -51,7 +51,7 @@
         const fetchThreads = async () => {
             try {
                 setLoading(true);
-                const response = await axios.get("http://localhost:5000/api/v1/thread?limit=25", {
+                const response = await axios.get("https://api-rumpi-production.up.railway.app/api/v1/thread?limit=25", {
                     headers: { Authorization: `Bearer ${token}` },
                 });
 
@@ -85,7 +85,7 @@
                 formData.append("content", content);
                 if (image) formData.append("image", image);
 
-                await axios.post("http://localhost:5000/api/v1/thread", formData, {
+                await axios.post("https://api-rumpi-production.up.railway.app/api/v1/thread", formData, {
                     headers: {
                         Authorization: `Bearer ${token}`,
                         "Content-Type": "multipart/form-data",
@@ -118,7 +118,7 @@
                 // Hit API ke database — backend menentukan apakah ini create atau delete like
                 // berdasarkan status like user saat ini di database
                 await axios.post(
-                    "http://localhost:5000/api/v1/thread/like",
+                    "https://api-rumpi-production.up.railway.app/api/v1/thread/like",
                     { threadId },
                     { headers: { Authorization: `Bearer ${token}` } }
                 );

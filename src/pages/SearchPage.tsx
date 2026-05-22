@@ -85,7 +85,7 @@ export default function SearchPage() {
                       <img
                         src={
                           u.avatar
-                            ? `http://localhost:5000/uploads/${u.avatar}`
+                            ? `https://api-rumpi-production.up.railway.app/uploads/${u.avatar}`
                             : `https://api.dicebear.com/7.x/avataaars/svg?seed=${u.username}`
                         }
                         alt={u.username}

@@ -7,7 +7,7 @@ import toast from "react-hot-toast";
 
 // 🔌 1. Bikin koneksi socket ke backend (sekali saja, di luar hook)
 // Kenapa di luar? → supaya tidak bikin koneksi baru tiap render
-const socket = io("http://localhost:5000");
+const socket = io("https://api-rumpi-production.up.railway.app");
 
 export function useThreadDetail(id?: string) {
   // 🧑 2. Ambil data user dari Redux (global state)
@@ -84,8 +84,8 @@ export function useThreadDetail(id?: string) {
 
       // 🚀 Ambil 2 API sekaligus (lebih cepat)
       const [t, r] = await Promise.all([
-        axios.get(`http://localhost:5000/api/v1/thread/${id}`, { headers }),
-        axios.get(`http://localhost:5000/api/v1/reply?thread_id=${id}`, {
+        axios.get(`https://api-rumpi-production.up.railway.app/api/v1/thread/${id}`, { headers }),
+        axios.get(`https://api-rumpi-production.up.railway.app/api/v1/reply?thread_id=${id}`, {
           headers,
         }),
       ]);
@@ -133,7 +133,7 @@ export function useThreadDetail(id?: string) {
 
       // 📡 8.3 Kirim ke backend
       await axios.post(
-        "http://localhost:5000/api/v1/reply",
+        "https://api-rumpi-production.up.railway.app/api/v1/reply",
         { content: text, thread_id: Number(id) },
         { headers },
       );

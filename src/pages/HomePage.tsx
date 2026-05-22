@@ -37,7 +37,7 @@ export default function HomePage() {
               <img
                 src={
                   user?.photo_profile
-                    ? `http://localhost:5000/uploads/${user.photo_profile}`
+                    ? `https://api-rumpi-production.up.railway.app/uploads/${user.photo_profile}`
                     : `https://api.dicebear.com/7.x/avataaars/svg?seed=${user?.username || "user"}`
                 }
                 alt="avatar"

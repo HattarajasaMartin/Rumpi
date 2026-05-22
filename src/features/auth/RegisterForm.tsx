@@ -19,7 +19,7 @@ export default function RegisterForm() {
     setLoading(true);
     try {
       // Panggil API Register
-      await axios.post(`http://localhost:5000/api/v1/auth/register`, form);
+      await axios.post(`https://api-rumpi-production.up.railway.app/api/v1/auth/register`, form);
       alert("Registration success! Please login.");
       navigate("/login");
     } catch (err: any) {

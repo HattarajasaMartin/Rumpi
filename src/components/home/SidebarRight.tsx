@@ -28,7 +28,7 @@ export const SidebarRight = () => {
             <img
               src={
                 user?.photo_profile
-                  ? `http://localhost:5000/uploads/${user.photo_profile}`
+                  ? `https://api-rumpi-production.up.railway.app/uploads/${user.photo_profile}`
                   : `https://api.dicebear.com/7.x/avataaars/svg?seed=${user?.username || "default"}`
               }
               alt="me"
@@ -89,7 +89,7 @@ export const SidebarRight = () => {
                     <img
                       src={
                         u.avatar
-                          ? `http://localhost:5000/uploads/${u.avatar}`
+                          ? `https://api-rumpi-production.up.railway.app/uploads/${u.avatar}`
                           : `https://api.dicebear.com/7.x/avataaars/svg?seed=${u.username}`
                       }
                       alt={u.username}

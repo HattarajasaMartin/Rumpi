@@ -69,7 +69,7 @@ export default function ProfileInfo({
           <img
             src={
               user?.photo_profile
-                ? `http://localhost:5000/uploads/${user.photo_profile}`
+                ? `https://api-rumpi-production.up.railway.app/uploads/${user.photo_profile}`
                 : `https://api.dicebear.com/7.x/avataaars/svg?seed=${user?.username}`
             }
             className="w-full h-full object-cover"
@@ -152,7 +152,7 @@ export default function ProfileInfo({
                       <img
                         src={
                           thread.avatar
-                            ? `http://localhost:5000/uploads/${thread.avatar}`
+                            ? `https://api-rumpi-production.up.railway.app/uploads/${thread.avatar}`
                             : `https://api.dicebear.com/7.x/avataaars/svg?seed=${thread.username}`
                         }
                         className="w-full h-full object-cover"
@@ -174,7 +174,7 @@ export default function ProfileInfo({
                       {thread.image && (
                         <div className="mb-3 max-w-sm">
                           <img
-                            src={`http://localhost:5000/uploads/${thread.image}`}
+                            src={`https://api-rumpi-production.up.railway.app/uploads/${thread.image}`}
                             alt="post"
                             className="w-full max-h-60 rounded-xl object-cover"
                             onError={(e) =>
@@ -230,7 +230,7 @@ export default function ProfileInfo({
                     className="aspect-square overflow-hidden cursor-pointer hover:opacity-80 transition"
                   >
                     <img
-                      src={`http://localhost:5000/uploads/${thread.image}`}
+                      src={`https://api-rumpi-production.up.railway.app/uploads/${thread.image}`}
                       alt="media"
                       className="w-full h-full object-cover"
                       onError={(e) => (e.currentTarget.style.display = "none")}

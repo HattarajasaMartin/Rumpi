@@ -42,7 +42,7 @@ export default function ProfilePage() {
         const token = localStorage.getItem("token");
 
         const res = await axios.get(
-          `http://localhost:5000/api/v1/user/${username}`,
+          `https://api-rumpi-production.up.railway.app/api/v1/user/${username}`,
           {
             headers: { Authorization: `Bearer ${token}` },
           },

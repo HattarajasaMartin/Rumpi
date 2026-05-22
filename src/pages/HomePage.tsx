@@ -24,9 +24,8 @@ export default function HomePage() {
   } = useThreads();
 
   return (
-    <div className="min-h-screen bg-black text-white flex">
+    <div className="min-h-screen bg-zinc-950 text-white flex">
       <div className="w-full flex">
-        {/* Sidebar Kiri */}
         <SidebarLeft />
 
         <main className="flex-1 py-8 border-r border-zinc-900 min-w-0">
@@ -34,7 +33,6 @@ export default function HomePage() {
 
           {/* Input Postingan Baru */}
           <div className="flex gap-4 px-8 mb-10">
-            {/* Avatar diambil dari Redux — kalau ada foto profil pakai itu, kalau tidak pakai dicebear */}
             <div className="w-12 h-12 rounded-full bg-zinc-800 overflow-hidden shrink-0">
               <img
                 src={
@@ -55,7 +53,6 @@ export default function HomePage() {
                 className="w-full bg-transparent border-none text-xl outline-none placeholder:text-zinc-600 resize-none min-h-[60px] text-white"
               />
 
-              {/* Preview Gambar Sebelum Post */}
               {image && (
                 <div className="relative w-fit">
                   <img
@@ -73,7 +70,7 @@ export default function HomePage() {
               )}
 
               <div className="flex items-center justify-between border-t border-zinc-900 pt-4">
-                <div className="flex gap-6 text-blue-500">
+                <div className="flex gap-6 text-teal-400">
                   <input
                     type="file"
                     ref={fileInputRef}
@@ -83,14 +80,14 @@ export default function HomePage() {
                   />
                   <ImageIcon
                     size={22}
-                    className="cursor-pointer hover:text-blue-400"
+                    className="cursor-pointer hover:text-teal-300"
                     onClick={() => fileInputRef.current?.click()}
                   />
                 </div>
                 <Button
                   onClick={handlePost}
                   disabled={isPosting || (!content.trim() && !image)}
-                  className="bg-blue-500 hover:bg-blue-600 px-8 rounded-full h-10 font-bold border-none text-white"
+                  className="bg-teal-500 hover:bg-teal-400 px-8 rounded-full h-10 font-bold border-none text-white"
                 >
                   {isPosting ? "Posting..." : "Post"}
                 </Button>
@@ -127,7 +124,6 @@ export default function HomePage() {
           </div>
         </main>
 
-        {/* Sidebar Kanan */}
         <SidebarRight />
       </div>
     </div>

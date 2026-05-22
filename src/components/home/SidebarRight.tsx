@@ -12,17 +12,17 @@ export const SidebarRight = () => {
 
   const handleFollow = async (userId: number) => {
     await followUser(userId);
-    removeFromSuggested(userId); // ← hilangkan dari list setelah follow
+    removeFromSuggested(userId);
   };
 
   return (
     <aside className="w-[25%] sticky top-0 h-screen py-8 px-8 space-y-6 overflow-y-auto">
       {/* MY PROFILE CARD */}
       <div className="bg-zinc-900 rounded-2xl p-5 border border-zinc-800 shadow-2xl">
-        <h3 className="font-bold mb-4 text-sm text-blue-500 uppercase tracking-widest">
+        <h3 className="font-bold mb-4 text-sm text-teal-400 uppercase tracking-widest">
           My Profile
         </h3>
-        <div className="h-24 bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl mb-[-48px]"></div>
+        <div className="h-24 bg-gradient-to-r from-teal-600 to-emerald-500 rounded-xl mb-[-48px]"></div>
         <div className="px-2 pb-2">
           <div className="w-20 h-20 rounded-full border-4 border-zinc-900 bg-zinc-800 overflow-hidden relative z-10">
             <img
@@ -44,7 +44,7 @@ export const SidebarRight = () => {
             <p className="text-sm mt-3 text-zinc-300">
               {user?.bio || "No bio yet."}
             </p>
-            <div className="flex gap-6 mt-4 text-sm font-semibold">
+            <div className="flex gap-6 mt-4 text-sm font-semibold text-zinc-400">
               <span>
                 <b className="text-white">{user?.following}</b> Following
               </span>
@@ -57,7 +57,7 @@ export const SidebarRight = () => {
           <Button
             onClick={() => navigate("/profile")}
             variant="outline"
-            className="w-full mt-5 border-zinc-700 rounded-full h-10 font-bold text-white hover:bg-zinc-800 transition-all"
+            className="w-full mt-5 border-teal-700 rounded-full h-10 font-bold text-teal-400 hover:bg-teal-900/30 transition-all"
           >
             Edit Profile
           </Button>
@@ -66,7 +66,7 @@ export const SidebarRight = () => {
 
       {/* SUGGESTED FOR YOU */}
       <div className="bg-zinc-900 rounded-2xl p-5 border border-zinc-800">
-        <h3 className="font-bold mb-5 text-zinc-100 text-sm uppercase">
+        <h3 className="font-bold mb-5 text-teal-400 text-sm uppercase tracking-widest">
           Suggested for you
         </h3>
 
@@ -81,7 +81,6 @@ export const SidebarRight = () => {
                 key={u.id}
                 className="flex items-center justify-between gap-3"
               >
-                {/* Avatar + Info — klik navigasi ke profile */}
                 <div
                   className="flex items-center gap-3 cursor-pointer flex-1 min-w-0"
                   onClick={() => navigate(`/profile/${u.username}`)}
@@ -107,10 +106,9 @@ export const SidebarRight = () => {
                   </div>
                 </div>
 
-                {/* Tombol Follow */}
                 <Button
                   onClick={() => handleFollow(u.id)}
-                  className="rounded-full bg-white text-black hover:bg-zinc-200 text-xs px-4 h-8 shrink-0"
+                  className="rounded-full bg-teal-500 text-white hover:bg-teal-400 text-xs px-4 h-8 shrink-0 border-none"
                 >
                   Follow
                 </Button>

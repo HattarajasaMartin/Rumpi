@@ -16,12 +16,12 @@ export function NavItem({
       onClick={onClick}
       className={`flex items-center gap-4 cursor-pointer p-3 -ml-3 rounded-2xl transition-all duration-200 ${
         active
-          ? "text-white bg-zinc-900/50"
+          ? "text-teal-400 bg-teal-900/20"
           : "text-zinc-500 hover:text-white hover:bg-zinc-900/30"
       }`}
     >
       <div
-        className={`${active ? "scale-110" : "group-hover:scale-110"} transition-transform`}
+        className={`${active ? "scale-110" : ""} transition-transform`}
       >
         {icon}
       </div>

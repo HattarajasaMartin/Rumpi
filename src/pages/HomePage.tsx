@@ -24,15 +24,15 @@ export default function HomePage() {
   } = useThreads();
 
   return (
-    <div className="min-h-screen bg-zinc-950 text-white flex">
+    <div className="min-h-screen bg-zinc-950 text-white flex overflow-x-hidden">
       <div className="w-full flex">
         <SidebarLeft />
 
-        <main className="flex-1 py-8 border-r border-zinc-900 min-w-0">
-          <h2 className="text-2xl font-bold mb-8 px-8 text-white">Home</h2>
+        <main className="flex-1 py-8 border-r border-zinc-900 min-w-0 pb-20 md:pb-8">
+          <h2 className="text-2xl font-bold mb-8 px-4 md:px-8 text-white">Home</h2>
 
           {/* Input Postingan Baru */}
-          <div className="flex gap-4 px-8 mb-10">
+          <div className="flex gap-4 px-4 md:px-8 mb-10">
             <div className="w-12 h-12 rounded-full bg-zinc-800 overflow-hidden shrink-0">
               <img
                 src={
@@ -45,7 +45,7 @@ export default function HomePage() {
               />
             </div>
 
-            <div className="flex-1 space-y-4">
+            <div className="flex-1 space-y-4 min-w-0">
               <textarea
                 value={content}
                 onChange={(e) => setContent(e.target.value)}
@@ -98,7 +98,7 @@ export default function HomePage() {
           {/* Feed Thread */}
           <div className="space-y-0">
             {loading ? (
-              <div className="px-8 text-zinc-500 italic">
+              <div className="px-4 md:px-8 text-zinc-500 italic">
                 Memuat postingan...
               </div>
             ) : (

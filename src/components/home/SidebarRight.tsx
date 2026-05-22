@@ -16,7 +16,7 @@ export const SidebarRight = () => {
   };
 
   return (
-    <aside className="hidden lg:block w-[25%] sticky top-0 h-screen py-8 px-8 space-y-6 overflow-y-auto">
+    <aside className="hidden lg:flex flex-col w-[25%] h-screen py-8 px-8 space-y-6 overflow-y-auto shrink-0 sticky top-0">
       {/* MY PROFILE CARD */}
       <div className="bg-zinc-900 rounded-2xl p-5 border border-zinc-800 shadow-2xl">
         <h3 className="font-bold mb-4 text-sm text-teal-400 uppercase tracking-widest">

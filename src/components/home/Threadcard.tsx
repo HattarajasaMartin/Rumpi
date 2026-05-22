@@ -73,7 +73,7 @@ export const Threadcard = ({
               <img
                 src={`https://api-rumpi-production.up.railway.app/uploads/${image}`}
                 alt="post content"
-                className="w-full rounded-2xl object-contain bg-zinc-950" // ← object-contain, hapus max-h, tambah bg
+                className="w-full rounded-2xl object-contain bg-zinc-950"
                 onError={(e) => (e.currentTarget.style.display = "none")}
               />
             </div>
@@ -93,7 +93,10 @@ export const Threadcard = ({
             </button>
 
             <button
-              onClick={(e) => e.stopPropagation()}
+              onClick={(e) => {
+                e.stopPropagation();
+                navigate(`/thread/${id}`);
+              }}
               className="flex items-center gap-2.5 hover:text-blue-500 transition-colors"
             >
               <MessageCircle size={18} />
